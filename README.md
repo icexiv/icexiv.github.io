@@ -15,6 +15,8 @@ notist serve --port 8080 -j 4
 
 也可使用 `nix build --cores 4 --max-jobs 2`，构建结果位于 `result/`。不进入开发环境时，可用 `nix run .#notist -- build -j 4`。
 
+日常开发使用 `dev`，通过 PR 合入 `main`。`nix build .#cn --out-link result-cn` 构建国内站；直接使用 Notist 时通过 `SITE_TARGET=cn` 选择国内配置，默认是 `global`。
+
 - `Notist.toml`：站点配置，默认部署于域名根路径。
 - `content/index.md`：首页文档入口和页面属性。
 - `content/projects/*.md`：每个项目的独立正文，使用 Notist Markdown。
@@ -36,7 +38,7 @@ Notist 将正文编译成 HTML，extension 不拼接正文或界面 HTML，模�
 
 - Market：链接至 GitHub Pages 产品站。
 - DB：灰色展示，标记 WIP，无链接。
-- Eorzea：FFXIV 国服启动器，标记「实验」，App 下载直链尚未接入；CLI 提供 Git 源码安装说明。
+- Eorzea：FFXIV 国服启动器，标记「实验」，App 按正式版／Dev 和平台提供下载；CLI 提供 Git 源码安装说明。
 
 卡片文案在 `data/projects.toml` 中维护，正文在 `content/projects/*.md` 中维护，布局和颜色在 `static/style.css` 中维护，交互在 `static/projects.js` 中维护。
 上方使用可横向浏览的 `li.project-card`，每张包含项目名称、简介和数据来源，GitHub 图标与仓库名位于卡片右上角。
@@ -47,8 +49,9 @@ Notist 将正文编译成 HTML，extension 不拼接正文或界面 HTML，模�
 导航支持方向键、Home、End；滑块也支持 PageUp、PageDown，触屏支持拖动，减少动态模式下立即吸附。
 下方 `section.project-panel` 展示选中项目的详细说明与大图。标题行占满内容宽度，打开／下载按钮靠最右；说明段落与功能列表在标题下方按正文方式纵向排列。
 
-Eorzea 下载使用分体按钮：主按钮对应正式版，右侧箭头单独展开 Dev build 选项。当前仅完成 UI，两个渠道尚未接入直链，均使用原生禁用状态；下拉箭头仍可操作。
-下拉基于原生 `details`，支持键盘展开、Escape 收起、点击外部收起和切换项目时关闭。本页面不修改或调用 CI、Shadow、服务器发布与更新接口。
+Eorzea 下载使用分体按钮：主按钮对应正式版，右侧箭头展开平台选择和 Dev build。浏览器读取静态清单，不请求 GitHub API，也不携带凭据。未发布渠道或缺少对应平台时，链接保持禁用；网络错误单独提示并可重试，不冒充“未发布”。平台可手动选择，macOS 不依赖不可靠的 UA 判断 CPU 架构。
+国际站读取 Eorzea 仓库 `main/downloads/github.json`，仅使用 GitHub Release 地址；国内站读取本站 `/downloads/eorzea.json`，仅使用 TOS 地址。清单由 Eorzea 发布 CI 更新，网站无需因下载版本变化而重新构建。来源及备案配置位于 `data/deployment.toml`。
+下拉基于原生 `details`，支持键盘展开、Escape 收起、点击外部收起和切换项目时关闭。
 项目通过 `data-project`、`data-select`、`data-project-panel` 关联，选择按钮的 `aria-controls` 指向对应详情区域。
 禁用 JavaScript 时展示全部项目详情，网站及仓库链接仍可使用。
 
@@ -101,14 +104,14 @@ node --check static/projects.js
 ## 发布
 
 将 `dist/`（或 `nix build` 的 `result/`）内的内容部署到静态站点根目录，不要部署源码目录。
-GitHub Pages 和自建服务器使用同一份产物，不直接发布源码目录。
+GitHub Pages 使用国际产物，`icexiv.top` 使用国内产物；二者都不直接发布源码目录。国内站悬挂与 Market 一致的 ICP 备案，公安备案为空时不显示。
 
 ### GitHub Pages CI
 
 `.github/workflows/pages.yml` 使用锁定的 Nix 环境构建站点，检查生成页面、extension 与 JavaScript 语法，再上传 `result/` 作为 Pages 产物。
 
-- 向 `main` / `master` 发起 PR：构建、检查并上传产物，不部署。
-- 推送 `main` / `master`：检查通过后部署 GitHub Pages。
-- 手动运行：任意分支可构建，仅 `main` / `master` 可部署。
+- 向 `main` 发起 PR：构建、检查两个产物，不读取部署凭据、不部署。
+- 推送 `main`：检查通过后并行部署 GitHub Pages 和自建服务器。
+- 手动运行：任意分支可构建，仅 `main` 可部署。
 
-首次启用需在仓库 **Settings → Pages → Build and deployment → Source** 选择 **GitHub Actions**。当前配置用于 `icexiv.github.io` 域名根路径，不涉及自建服务器或 Eorzea 的构建发布。
+Pages Source 使用 **GitHub Actions**。服务器部署使用专用受限密钥与 `rrsync`，同步时排除 `/downloads/`，不会删除 Eorzea 独立发布的清单。服务器配置与授权说明见 `ops/README.md`。

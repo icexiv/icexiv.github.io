@@ -9,6 +9,7 @@
     <link rel="icon" href="{{ url(path='favicon.svg') }}" type="image/svg+xml">
     <link rel="stylesheet" href="{{ url(path='style.css') }}?rev={{ site.data.revisions['style.css'] }}">
     <script src="{{ url(path='projects.js') }}?rev={{ site.data.revisions['projects.js'] }}" defer></script>
+    <script src="{{ url(path='downloads.js') }}?rev={{ site.data.revisions['downloads.js'] }}" defer></script>
     <noscript><style>.project-panel[hidden] { display: block !important; } .carousel-controls, .project-pagination { display: none; } .project-track { gap: 16px; } .project-card { transform: none !important; margin-left: 0 !important; }</style></noscript>
   </head>
   <body>
@@ -30,6 +31,12 @@
       </header>
       <main>{% block content %}{% endblock content %}</main>
       <footer class="footer page-width"><span>IceXIV</span><span>Azur冰弦@宇宙和音</span></footer>
+      {% if site.data.deployment.target == "cn" %}
+      <div class="legal-footer page-width">
+        {% if site.data.deployment.icp %}<a href="{{ site.data.deployment.icp_url }}" target="_blank" rel="noopener noreferrer">{{ site.data.deployment.icp }}</a>{% endif %}
+        {% if site.data.deployment.police %}<a href="{{ site.data.deployment.police_url }}" target="_blank" rel="noopener noreferrer">{{ site.data.deployment.police }}</a>{% endif %}
+      </div>
+      {% endif %}
     </div>
   </body>
 </html>

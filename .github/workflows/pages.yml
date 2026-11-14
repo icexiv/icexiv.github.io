@@ -2,9 +2,9 @@ name: Website
 
 on:
   push:
-    branches: [main, master]
+    branches: [main]
   pull_request:
-    branches: [main, master]
+    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -32,23 +32,42 @@ jobs:
       - name: Build website
         run: nix build --no-update-lock-file --print-build-logs --cores 4 --max-jobs 2
 
+      - name: Build domestic website
+        run: nix build .#cn --out-link result-cn --no-update-lock-file --print-build-logs --cores 4 --max-jobs 2
+
       - name: Test generated website and extension
         env:
           SITE_ROOT: result
         run: nix develop --no-update-lock-file --command python3 -m unittest discover -s tests -v
 
       - name: Check JavaScript syntax
-        run: nix develop --no-update-lock-file --command node --check static/projects.js
+        run: |
+          nix develop --no-update-lock-file --command node --check static/projects.js
+          nix develop --no-update-lock-file --command node --check static/downloads.js
+          nix develop --no-update-lock-file --command node --test tests/downloads.test.cjs
+
+      - name: Test domestic website
+        env:
+          SITE_ROOT: result-cn
+          SITE_TARGET: cn
+        run: nix develop --no-update-lock-file --command python3 -m unittest discover -s tests -v
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: result
 
+      - name: Upload domestic website
+        uses: actions/upload-artifact@v4
+        with:
+          name: domestic-site
+          path: result-cn/
+          retention-days: 7
+
   deploy:
     name: Deploy to GitHub Pages
     needs: build
-    if: github.event_name != 'pull_request' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
@@ -64,3 +83,32 @@ jobs:
       - name: Deploy website
         id: deployment
         uses: actions/deploy-pages@v4
+
+  deploy-server:
+    name: Deploy to icexiv.top
+    needs: build
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      DEPLOY_HOST: ${{ vars.DEPLOY_HOST || 'deploy@82.156.196.54' }}
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: domestic-site
+          path: dist
+      - name: Configure dedicated SSH key
+        env:
+          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          DEPLOY_KNOWN_HOSTS: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
+        run: |
+          test -n "$DEPLOY_SSH_KEY"
+          test -n "$DEPLOY_KNOWN_HOSTS"
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$DEPLOY_SSH_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          printf '%s\n' "$DEPLOY_KNOWN_HOSTS" > ~/.ssh/known_hosts
+      - name: Deploy site without touching release manifests
+        run: |
+          rsync -rlt --delete --delay-updates --chmod=D755,F644 \
+            --exclude=/downloads/ dist/ "$DEPLOY_HOST:./"

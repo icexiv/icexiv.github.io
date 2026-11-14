@@ -19,7 +19,8 @@ class ExtensionTests(unittest.TestCase):
         metadata = tomllib.loads((ROOT / "data/projects.toml").read_text())
         self.request = {
             "version": 2, "event": "before_template", "root": str(ROOT),
-            "data": {"projects": metadata, "other": {"preserved": True}},
+            "data": {"projects": metadata, "other": {"preserved": True},
+                     "deployment": tomllib.loads((ROOT / "data/deployment.toml").read_text())},
             "files": {},
             "pages": [{"route": {"path": item["page"], "url": f"/projects/{item['id']}.html"},
                        "title": item["id"].title(), "attrs": {"template": "project"},
@@ -37,7 +38,7 @@ class ExtensionTests(unittest.TestCase):
             self.assertEqual(card["panel_id"], panel["panel_id"])
             self.assertIn(f"{card['id']} body", panel["html"])
         self.assertEqual(sum(card["active"] for card in catalog["cards"]), 1)
-        self.assertEqual(set(result["revisions"]), {"style.css", "projects.js"})
+        self.assertEqual(set(result["revisions"]), {"style.css", "projects.js", "downloads.js"})
 
     def test_project_count_is_not_hardcoded(self):
         self.request["data"]["projects"]["projects"].pop()

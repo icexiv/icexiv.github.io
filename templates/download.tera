@@ -1,14 +1,18 @@
-<div class="download-split" aria-label="{{ project.title }} App 下载">
-  <button class="product-link download-primary" type="button" data-channel="stable" disabled title="App 正式版直链尚未接入" aria-label="{{ project.title }} App 下载，正式版直链尚未接入">
+<div class="download-split" aria-label="{{ project.title }} App 下载" data-download-manifest="{{ site.data.deployment.manifest }}" data-download-source="{{ site.data.deployment.source }}">
+  <a class="product-link download-primary" data-channel="stable" aria-disabled="true" tabindex="-1" title="正在读取下载信息" aria-label="{{ project.title }} App 下载">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m-5-5 5 5 5-5M5 15v5h14v-5"/></svg>
-    <span class="download-version" data-download-version="stable">未发布</span><span>App 下载</span>
-  </button>
+    <span class="download-version" data-download-version="stable">读取中</span><span>App 下载</span>
+  </a>
   <details class="download-options">
     <summary class="download-toggle" aria-label="更多 App 下载选项" aria-controls="{{ project.id }}-download-menu">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
     </summary>
     <div class="download-menu" id="{{ project.id }}-download-menu">
-      <button class="download-option" type="button" data-channel="dev" disabled><span class="download-option-title">App · Dev build</span><span class="download-option-note">直链尚未接入</span></button>
+      <label class="download-platform-label">平台<select class="download-platform" aria-label="下载平台"><option value="" disabled>选择平台</option><option value="windows-x86_64">Windows · x86_64</option><option value="linux-x86_64">Linux · x86_64</option><option value="macos-aarch64">macOS · Apple Silicon（实验）</option></select></label>
+      <a class="download-option" data-channel="dev" aria-disabled="true" tabindex="-1"><span class="download-option-title">App · Dev build</span><span class="download-option-note">正在读取</span></a>
+      <p class="download-status" role="status" aria-live="polite">正在读取下载信息</p>
+      <button class="download-retry" type="button" hidden>重试</button>
+      <noscript><p class="download-status">需要启用 JavaScript 才能读取下载清单。</p></noscript>
     </div>
   </details>
 </div>

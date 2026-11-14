@@ -1,0 +1,14 @@
+icexiv.top {
+    encode zstd gzip
+    root * /srv/icexiv.top/www
+
+    @manifest path /downloads/*
+    header @manifest Cache-Control "no-cache"
+    @pages path / /index.html /projects/*
+    header @pages Cache-Control "no-cache"
+    header {
+        X-Content-Type-Options nosniff
+        Referrer-Policy strict-origin-when-cross-origin
+    }
+    file_server
+}
