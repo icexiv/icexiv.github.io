@@ -23,18 +23,21 @@
             ./scripts
           ];
         };
+        mkSite = target: pkgs.runCommand "icexiv-site-${target}" {
+          nativeBuildInputs = [ notistPackage pkgs.python3 ];
+          SITE_TARGET = target;
+        } ''
+          cp -r ${siteSource}/. .
+          chmod -R u+w .
+          notist build -j 2
+          mkdir -p "$out"
+          cp -r dist/. "$out/"
+        '';
       in {
         packages = {
           notist = notistPackage;
-          default = pkgs.runCommand "icexiv-site" {
-            nativeBuildInputs = [ notistPackage pkgs.python3 ];
-          } ''
-            cp -r ${siteSource}/. .
-            chmod -R u+w .
-            notist build -j 2
-            mkdir -p "$out"
-            cp -r dist/. "$out/"
-          '';
+          default = mkSite "global";
+          cn = mkSite "cn";
         };
         apps.notist = {
           type = "app";

@@ -1,6 +1,7 @@
 /.direnv/
 /dist/
 /result
+/result-cn
 __pycache__/
 /.openchamber/
 /.env

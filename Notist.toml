@@ -13,4 +13,4 @@ copy_content_assets = false
 
 [site.extensions.projects]
 command = ["python3", "scripts/projects.py"]
-watch = ["scripts", "static/style.css", "static/projects.js"]
+watch = ["scripts", "static/style.css", "static/projects.js", "static/downloads.js"]

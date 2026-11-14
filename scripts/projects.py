@@ -3,6 +3,7 @@
 import hashlib
 import html
 import json
+import os
 import re
 import sys
 from pathlib import Path
@@ -58,10 +59,17 @@ def respond(request):
         raise ValueError("unsupported event")
     data = dict(request["data"])
     data["catalog"] = catalog(request)
+    target = os.environ.get("SITE_TARGET", "global")
+    if target not in {"global", "cn"}:
+        raise ValueError("SITE_TARGET must be global or cn")
+    deployment = data["deployment"]
+    data["deployment"] = dict(deployment, target=target,
+        manifest=deployment["server_manifest" if target == "cn" else "github_manifest"],
+        source="tos" if target == "cn" else "github")
     root = Path(request["root"])
     data["revisions"] = {
         name: hashlib.sha256((root / "static" / name).read_bytes()).hexdigest()[:12]
-        for name in ("style.css", "projects.js")
+        for name in ("style.css", "projects.js", "downloads.js")
     }
     response["data"] = data
     return response

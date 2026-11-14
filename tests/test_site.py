@@ -52,7 +52,7 @@ class SiteTests(unittest.TestCase):
     def test_asset_fingerprints(self):
         assets = [attrs["href"] for tag, attrs in self.page.elements if tag == "link" and attrs.get("rel") == "stylesheet"]
         assets += [attrs["src"] for tag, attrs in self.page.elements if tag == "script" and "src" in attrs]
-        self.assertEqual(len(assets), 2)
+        self.assertEqual(len(assets), 3)
         for asset in assets:
             with self.subTest(asset=asset):
                 url = urlsplit(asset)
@@ -134,15 +134,23 @@ class SiteTests(unittest.TestCase):
         toggle = self.page.with_class("download-toggle")
         options = self.page.with_class("download-option")
         self.assertEqual(len(primary), 1)
-        self.assertEqual(primary[0][0], "button")
-        self.assertIn("disabled", primary[0][1])
+        self.assertEqual(primary[0][0], "a")
+        self.assertEqual(primary[0][1]["aria-disabled"], "true")
         self.assertNotIn("href", primary[0][1])
         self.assertEqual(len(toggle), 1)
         self.assertEqual(toggle[0][0], "summary")
         self.assertNotIn("disabled", toggle[0][1])
         self.assertEqual(len(options), 1)
         self.assertEqual(options[0][1]["data-channel"], "dev")
-        self.assertIn("disabled", options[0][1])
+        self.assertEqual(options[0][1]["aria-disabled"], "true")
+
+    def test_deployment_source_and_legal_footer(self):
+        domestic = os.environ.get("SITE_TARGET") == "cn"
+        group = self.page.with_class("download-split")[0][1]
+        self.assertEqual(group["data-download-source"], "tos" if domestic else "github")
+        self.assertEqual(group["data-download-manifest"], "/downloads/eorzea.json" if domestic
+                         else "https://raw.githubusercontent.com/icexiv/eorzea/main/downloads/github.json")
+        self.assertEqual(bool(self.page.with_class("legal-footer")), domestic)
 
     def test_standalone_project_pages(self):
         for key in ("market", "db", "eorzea"):
