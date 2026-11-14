@@ -1,0 +1,11 @@
+{% extends "base" %}
+{% block content %}
+<nav class="page-width project-back"><a href="{{ url(path='index.html') }}">← 全部项目</a></nav>
+{% set standalone = true %}
+{% for item in site.data.catalog.panels %}
+  {% if item.url == page.route.url %}
+    {% set project = item %}
+    {% include "panel" %}
+  {% endif %}
+{% endfor %}
+{% endblock content %}

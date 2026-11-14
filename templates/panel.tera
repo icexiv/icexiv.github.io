@@ -1,0 +1,16 @@
+<section class="project-panel" id="{{ project.panel_id }}" data-project-panel="{{ project.id }}" aria-labelledby="{{ project.heading_id }}"{% if not standalone and not project.active %} hidden{% endif %}>
+  <div class="detail-copy page-width">
+    <div class="detail-text">
+      <div class="detail-heading">
+        <h2 id="{{ project.heading_id }}">{{ project.title }}{% if project.badge %} <span class="badge {{ project.badge_class }}">{{ project.badge }}</span>{% endif %}</h2>
+        {% if project.action == "open" %}<a class="product-link" href="{{ project.action_url }}">{{ project.action_label }} <span aria-hidden="true">↗</span></a>
+        {% elif project.action == "download" %}{% include "download" %}{% endif %}
+      </div>
+      <div class="project-body">{{ project.html | safe }}</div>
+      {% if not standalone %}<a class="project-permalink" href="{{ project.url }}">独立页面 <span aria-hidden="true">↗</span></a>{% endif %}
+    </div>
+  </div>
+  {% if project.empty_preview %}
+  <div class="visual-stage"><div class="preview-placeholder" role="img" aria-label="{{ project.title }} 图片占位，暂无预览"><span>暂无预览</span></div></div>
+  {% endif %}
+</section>

@@ -1,0 +1,37 @@
+[[projects]]
+id = "market"
+page = "projects/market.md"
+icon = "market"
+description = "更现代、干净的 FF14 市场查价网站，及时更新中文物品名称映射。"
+repo = "https://github.com/icexiv/icexiv-market"
+repo_name = "icexiv-market"
+action = "open"
+action_url = "https://icexiv.github.io/icexiv-market/"
+action_label = "打开 Market"
+sources = [
+  { name = "Universalis API", url = "https://docs.universalis.app/" },
+  { name = "ffxiv-datamining-cn", url = "https://github.com/thewakingsands/ffxiv-datamining-cn" },
+]
+
+[[projects]]
+id = "db"
+page = "projects/db.md"
+icon = "db"
+description = "查阅物品与游戏资料。"
+badge = "WIP"
+badge_class = "wip"
+unavailable = true
+note = "开发中"
+empty_preview = true
+
+[[projects]]
+id = "eorzea"
+page = "projects/eorzea.md"
+icon = "eorzea"
+description = "FFXIV 国服启动器，支持 Windows / Linux / macOS 跨平台运行及 Dalamud 插件框架。"
+badge = "实验"
+badge_class = "experimental"
+repo = "https://github.com/icexiv/eorzea"
+repo_name = "eorzea"
+note = "早期版本"
+action = "download"

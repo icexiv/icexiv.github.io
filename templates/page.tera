@@ -1,0 +1,35 @@
+{% extends "base" %}
+{% block content %}
+<section class="intro-section page-width" aria-labelledby="intro-heading">
+  <div class="intro-heading-row">
+    <div><h1 id="intro-heading">现代 ff14 工具集</h1>幻想重构全套工具生态<br/><s>甚至 ff14 本身（x）</s></div>
+    <div class="carousel-controls" aria-label="项目轮播控制">
+      <output id="carousel-position" aria-live="polite" aria-atomic="true">1 / {{ site.data.catalog.count }}</output>
+      <button class="carousel-arrow" type="button" data-carousel-prev disabled aria-label="上一个项目"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m14 6-6 6 6 6"/></svg></button>
+      <button class="carousel-arrow" type="button" data-carousel-next disabled aria-label="下一个项目"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m10 6 6 6-6 6"/></svg></button>
+    </div>
+  </div>
+  <ul class="project-track" id="project-track" aria-label="项目，支持横向滑动浏览">
+    {% for project in site.data.catalog.cards %}
+    <li class="project-card{% if project.active %} is-selected{% endif %}{% if project.unavailable %} unavailable{% endif %}" data-project="{{ project.id }}">
+      <div class="project-header">
+        {% include "icon" %}
+        <h2><button class="project-select" id="choose-{{ project.id }}" type="button" data-select="{{ project.id }}" aria-pressed="{{ project.active }}" aria-controls="{{ project.panel_id }}" disabled>{{ project.title }}</button>{% if project.badge %} <span class="badge {{ project.badge_class }}">{{ project.badge }}</span>{% endif %}</h2>
+        {% if project.repo %}<a class="repo-link" href="{{ project.repo }}" aria-label="GitHub 仓库：{{ project.repo_name }}"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><use href="#github-mark"/></svg><span>{{ project.repo_name }}</span></a>{% endif %}
+      </div>
+      <p class="project-description">{{ project.description }}</p>
+      <div class="card-meta">
+        {% if project.sources %}<p class="source">数据来源：{% for source in project.sources %}{% if not loop.first %} · {% endif %}<a href="{{ source.url }}">{{ source.name }}</a>{% endfor %}</p>{% endif %}
+        {% if project.note %}<p class="{% if project.unavailable %}unavailable-action{% else %}platform-note{% endif %}">{{ project.note }}</p>{% endif %}
+      </div>
+    </li>
+    {% endfor %}
+  </ul>
+  <nav class="project-pagination" aria-label="快速切换项目">
+    {% for item in site.data.catalog.navigation %}<button class="project-jump" type="button" data-jump="{{ item.id }}"{% if item.active %} aria-current="true"{% endif %} aria-controls="{{ item.panel_id }}" disabled>{{ item.title }}</button>{% endfor %}
+    <input class="project-scrollbar" type="range" min="0" max="{{ site.data.catalog.max }}" step="any" value="0" aria-label="拖动切换项目" aria-valuetext="{{ site.data.catalog.navigation[0].title }}" aria-controls="project-track" disabled>
+  </nav>
+</section>
+{% set standalone = false %}
+{% for project in site.data.catalog.panels %}{% include "panel" %}{% endfor %}
+{% endblock content %}

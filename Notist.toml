@@ -1,0 +1,16 @@
+[package]
+name = "icexiv"
+
+[site]
+title = "IceXIV · FF14 工具集"
+base_url = "/"
+content = "content"
+templates = "templates"
+static_dir = "static"
+template = "page"
+output = "dist"
+copy_content_assets = false
+
+[site.extensions.projects]
+command = ["python3", "scripts/projects.py"]
+watch = ["scripts", "static/style.css", "static/projects.js"]
