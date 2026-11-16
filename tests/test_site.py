@@ -73,7 +73,7 @@ class SiteTests(unittest.TestCase):
     def test_independent_links(self):
         self.assertFalse(self.page.nested_links)
         self.assertEqual(self.page.anchor_depth, 0)
-        self.assertEqual(len(self.page.with_class("product-link")), 2)
+        self.assertEqual(len(self.page.with_class("product-link")), 3)
 
     def test_cards_and_placeholders(self):
         self.assertEqual(len(self.page.with_class("project-card")), 3)
@@ -133,20 +133,25 @@ class SiteTests(unittest.TestCase):
         primary = self.page.with_class("download-primary")
         toggle = self.page.with_class("download-toggle")
         options = self.page.with_class("download-option")
-        self.assertEqual(len(primary), 1)
-        self.assertEqual(primary[0][0], "a")
-        self.assertEqual(primary[0][1]["aria-disabled"], "true")
-        self.assertNotIn("href", primary[0][1])
-        self.assertEqual(len(toggle), 1)
-        self.assertEqual(toggle[0][0], "summary")
-        self.assertNotIn("disabled", toggle[0][1])
-        self.assertEqual(len(options), 1)
-        self.assertEqual(options[0][1]["data-channel"], "dev")
-        self.assertEqual(options[0][1]["aria-disabled"], "true")
+        self.assertEqual(len(primary), 2)
+        self.assertEqual({attrs["data-channel"] for _, attrs in primary}, {"stable", "dev"})
+        for tag, attrs in primary:
+            self.assertEqual(tag, "a")
+            self.assertEqual(attrs["aria-disabled"], "true")
+            self.assertNotIn("href", attrs)
+        self.assertEqual(len(toggle), 2)
+        for tag, attrs in toggle:
+            self.assertEqual(tag, "summary")
+            self.assertNotIn("disabled", attrs)
+        self.assertEqual(len(options), 6)
+        for _, attrs in options:
+            self.assertIn("data-platform", attrs)
+            self.assertEqual(attrs["aria-disabled"], "true")
+        self.assertEqual(len(self.page.with_class("download-filename")), 2)
 
     def test_deployment_source_and_legal_footer(self):
         domestic = os.environ.get("SITE_TARGET") == "cn"
-        group = self.page.with_class("download-split")[0][1]
+        group = self.page.with_class("download-controls")[0][1]
         self.assertEqual(group["data-download-source"], "tos" if domestic else "github")
         self.assertEqual(group["data-download-manifest"], "/downloads/eorzea.json" if domestic
                          else "https://raw.githubusercontent.com/icexiv/eorzea/main/downloads/github.json")
