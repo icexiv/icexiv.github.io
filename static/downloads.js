@@ -1,9 +1,43 @@
 (() => {
   const groups = [...document.querySelectorAll('[data-download-manifest]')];
   const cache = new Map();
-  // macOS browser UA does not reliably distinguish Intel from Apple Silicon.
-  const platform = /Win/i.test(navigator.platform) ? 'windows-x86_64'
-    : /Linux/i.test(navigator.platform) && !/Android|aarch64|arm64/i.test(navigator.userAgent) ? 'linux-x86_64' : '';
+  const labels = {
+    'windows-x86_64': 'Windows · x86_64', 'windows-aarch64': 'Windows · ARM64', 'windows-x86': 'Windows · 32 位',
+    'linux-x86_64': 'Linux · x86_64', 'linux-aarch64': 'Linux · ARM64', 'linux-x86': 'Linux · 32 位',
+    'macos-aarch64': 'macOS · Apple Silicon', 'macos-x86_64': 'macOS · Intel',
+  };
+
+  async function detectPlatform() {
+    const ua = navigator.userAgent || '';
+    if (/Android|iPhone|iPad|iPod/i.test(ua) || navigator.userAgentData?.mobile ||
+        (/Mac/i.test(navigator.platform) && navigator.maxTouchPoints > 1)) return '';
+    if (navigator.userAgentData?.getHighEntropyValues) {
+      let timer;
+      try {
+        const hints = await Promise.race([
+          navigator.userAgentData.getHighEntropyValues(['platform', 'architecture', 'bitness', 'wow64']),
+          new Promise(resolve => { timer = setTimeout(() => resolve(null), 1200); }),
+        ]);
+        if (hints) {
+          const os = /Windows/i.test(hints.platform) ? 'windows' : /macOS/i.test(hints.platform) ? 'macos' : /Linux/i.test(hints.platform) ? 'linux' : '';
+          const architecture = hints.architecture || '';
+          const bits64 = hints.bitness === '64' || hints.wow64 === true || /64/.test(architecture);
+          const arch = /arm|aarch/i.test(architecture) && bits64 ? 'aarch64'
+            : /x86|amd/i.test(architecture) && bits64 ? 'x86_64'
+            : hints.bitness === '32' ? 'x86' : '';
+          if (os && arch) return `${os}-${arch}`;
+        }
+      } catch { /* Fall back only to architecture information actually present in the UA. */ }
+      finally { clearTimeout(timer); }
+    }
+    // Safari reports Intel in the UA even on Apple Silicon; do not infer a Mac CPU from it.
+    if (/Mac/i.test(navigator.platform) || /Macintosh/i.test(ua)) return '';
+    const os = /Windows/i.test(ua) ? 'windows' : /Linux/i.test(ua) ? 'linux' : '';
+    const arch = /aarch64|arm64/i.test(ua) ? 'aarch64' : /Win64|WOW64|x86_64|amd64|\bx64\b/i.test(ua) ? 'x86_64'
+      : /i[3-6]86|\bx86\b/i.test(ua) ? 'x86' : '';
+    return os && arch ? `${os}-${arch}` : '';
+  }
+  const detectedPlatform = detectPlatform();
 
   function validate(data, source) {
     if (data.schema !== 1 || data.source !== source || !data.channels) throw new Error('清单格式不正确');
@@ -39,46 +73,62 @@
   }
 
   groups.forEach(group => {
-    const selector = group.querySelector('.download-platform');
     const status = group.querySelector('.download-status');
     const retry = group.querySelector('.download-retry');
+    const splits = [...group.querySelectorAll('[data-download-channel]')];
     let manifest = null;
-    selector.value = platform;
+    let platform = '';
+
+    function updateLink(link, asset, unavailable) {
+      link.removeAttribute('href');
+      link.setAttribute('aria-disabled', String(!asset));
+      link.tabIndex = asset ? 0 : -1;
+      link.title = asset ? `${asset.filename}\n${(asset.size / 1048576).toFixed(1)} MiB\nSHA-256: ${asset.sha256}` : unavailable;
+      if (asset) link.href = asset.url;
+    }
 
     function render() {
-      for (const name of ['stable', 'dev']) {
-        const link = group.querySelector(`[data-channel="${name}"]`);
-        const channel = manifest?.channels[name];
-        const asset = channel?.assets[selector.value];
-        link.removeAttribute('href');
-        link.setAttribute('aria-disabled', String(!asset));
-        link.tabIndex = asset ? 0 : -1;
-        if (asset) {
-          link.href = asset.url;
-          link.title = `${asset.filename}\n${(asset.size / 1048576).toFixed(1)} MiB\nSHA-256: ${asset.sha256}`;
-        } else link.title = !selector.value ? '请选择下载平台' : channel ? '此版本没有对应平台的 App' : '此渠道尚未发布';
-        const label = link.querySelector(name === 'stable' ? '[data-download-version]' : '.download-option-note');
-        label.textContent = asset ? channel.version : !selector.value ? '选择平台' : channel ? '暂无此平台' : '未发布';
+      for (const split of splits) {
+        const channel = manifest.channels[split.dataset.downloadChannel];
+        const asset = channel?.assets[platform];
+        const link = split.querySelector('.download-primary');
+        const unavailable = !channel ? '此渠道尚未发布' : !platform ? '展开箭头选择平台' : `${labels[platform] || platform} 暂无构建`;
+        updateLink(link, asset, unavailable);
+        split.querySelector('[data-download-version]').textContent = channel ? channel.version : '未发布';
+        split.querySelector('.download-filename').textContent = asset ? asset.filename : unavailable;
+        split.querySelector('.download-menu-label').textContent = platform ? '其他平台' : '选择平台';
+        for (const option of split.querySelectorAll('[data-platform]')) {
+          const key = option.dataset.platform;
+          const alternative = channel?.assets[key];
+          option.hidden = key === platform;
+          updateLink(option, alternative, channel ? '此平台暂无构建' : '此渠道尚未发布');
+          option.querySelector('.download-option-note').textContent = alternative ? alternative.filename : channel ? '暂无此平台' : '未发布';
+        }
       }
-      status.textContent = selector.value ? '下载来源：' + (manifest.source === 'tos' ? 'TOS' : 'GitHub Release') : '请选择下载平台';
+      status.textContent = (platform ? `已识别 ${labels[platform] || platform}` : '无法确认平台架构，请在箭头中选择') +
+        ' · 下载来源：' + (manifest.source === 'tos' ? 'TOS' : 'GitHub Release');
     }
 
     async function refresh() {
       retry.hidden = true;
       status.textContent = '正在读取下载信息';
       try {
-        manifest = await load(group.dataset.downloadManifest, group.dataset.downloadSource);
+        const result = await Promise.all([load(group.dataset.downloadManifest, group.dataset.downloadSource), detectedPlatform]);
+        manifest = result[0];
+        platform = result[1];
         render();
       } catch {
         if (!manifest) {
-          group.querySelector('[data-download-version]').textContent = '信息不可用';
-          group.querySelector('.download-option-note').textContent = '信息不可用';
+          for (const split of splits) {
+            split.querySelector('[data-download-version]').textContent = '信息不可用';
+            split.querySelector('.download-filename').textContent = '下载信息暂不可用';
+            for (const option of split.querySelectorAll('[data-platform]')) option.querySelector('.download-option-note').textContent = '信息不可用';
+          }
         }
         status.textContent = manifest ? '更新失败，保留上次读取的下载信息' : '下载信息暂不可用，不代表尚未发布';
         retry.hidden = false;
       }
     }
-    selector.addEventListener('change', () => { if (manifest) render(); });
     retry.addEventListener('click', refresh);
     refresh();
   });

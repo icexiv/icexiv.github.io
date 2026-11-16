@@ -283,6 +283,13 @@
       if (details.open && !details.parentElement.contains(event.target)) details.open = false;
     });
   });
+  downloadOptions.forEach(details => {
+    details.addEventListener('toggle', () => {
+      if (details.open) downloadOptions.forEach(other => {
+        if (other !== details) other.open = false;
+      });
+    });
+  });
   document.addEventListener('keydown', event => {
     if (event.key !== 'Escape') return;
     const open = downloadOptions.find(details => details.open);
