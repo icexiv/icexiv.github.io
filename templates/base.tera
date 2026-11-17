@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="{{ url(path='style.css') }}?rev={{ site.data.revisions['style.css'] }}">
     <script src="{{ url(path='projects.js') }}?rev={{ site.data.revisions['projects.js'] }}" defer></script>
     <script src="{{ url(path='downloads.js') }}?rev={{ site.data.revisions['downloads.js'] }}" defer></script>
+    {% if site.data.deployment.target == "cn" %}<script src="{{ url(path='_analytics/tracker.js') }}" defer referrerpolicy="no-referrer"></script>{% endif %}
     <noscript><style>.project-panel[hidden] { display: block !important; } .carousel-controls, .project-pagination { display: none; } .project-track { gap: 16px; } .project-card { transform: none !important; margin-left: 0 !important; }</style></noscript>
   </head>
   <body>

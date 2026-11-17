@@ -51,7 +51,8 @@ class SiteTests(unittest.TestCase):
 
     def test_asset_fingerprints(self):
         assets = [attrs["href"] for tag, attrs in self.page.elements if tag == "link" and attrs.get("rel") == "stylesheet"]
-        assets += [attrs["src"] for tag, attrs in self.page.elements if tag == "script" and "src" in attrs]
+        assets += [attrs["src"] for tag, attrs in self.page.elements
+                   if tag == "script" and "src" in attrs and "rev=" in attrs["src"]]
         self.assertEqual(len(assets), 3)
         for asset in assets:
             with self.subTest(asset=asset):
@@ -165,6 +166,18 @@ class SiteTests(unittest.TestCase):
             self.assertEqual(police[0][1]["href"], "https://beian.mps.gov.cn/#/query/webSearch?code=11010502064164")
             self.assertIn("京公网安备11010502064164号", PAGE.read_text())
             self.assertTrue((ROOT / "assets/police-beian.png").is_file())
+
+    def test_domestic_analytics_injection(self):
+        domestic = os.environ.get("SITE_TARGET") == "cn"
+        scripts = [attrs for tag, attrs in self.page.elements if tag == "script" and "src" in attrs]
+        tracker = [attrs for attrs in scripts if "_analytics/tracker.js" in attrs["src"]]
+        self.assertEqual(len(tracker), 1 if domestic else 0)
+        if domestic:
+            self.assertEqual(tracker[0]["src"], "/_analytics/tracker.js")
+            self.assertEqual(tracker[0]["referrerpolicy"], "no-referrer")
+            source = (ROOT / "_analytics/tracker.js").read_text()
+            self.assertIn("icexiv.top", source)
+            self.assertIn("/projects/eorzea.html", source)
 
     def test_standalone_project_pages(self):
         for key in ("market", "db", "eorzea"):
