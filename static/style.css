@@ -45,7 +45,7 @@ main { flex: 1; min-width: 0; }
   letter-spacing: -.045em;
 }
 
-.brand svg { width: 27px; height: 29px; }
+.brand img { width: 29px; height: 29px; }
 .github {
   color: #737b87;
   display: inline-flex;

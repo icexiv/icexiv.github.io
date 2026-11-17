@@ -113,7 +113,10 @@ class SiteTests(unittest.TestCase):
                 self.assertTrue(any("project-card" in a.get("class", "").split() for _, a in parents))
             if "repo-link" in classes:
                 self.assertTrue(any("project-header" in a.get("class", "").split() for _, a in parents))
-            if tag == "img" and "police-beian" not in attrs.get("src", ""):
+            if tag == "img" and "brand-mark" in classes:
+                self.assertTrue(any("brand" in a.get("class", "").split() for _, a in parents))
+                self.assertFalse(attrs.get("alt"), "标志与文字并列，图像本身是装饰")
+            elif tag == "img" and "police-beian" not in attrs.get("src", ""):
                 self.assertFalse(any(t in {"a", "button"} for t, _ in parents), "截图仅展示，不提供点击放大")
                 self.assertTrue(any("screen" in a.get("class", "").split() for _, a in parents))
                 self.assertIn("notist-embed", parents[-1][1].get("class", "").split())
@@ -122,7 +125,9 @@ class SiteTests(unittest.TestCase):
                 self.assertTrue(any("legal-police" in a.get("class", "").split() for _, a in parents))
 
     def test_screenshot_dimensions(self):
-        images = [attrs for tag, attrs in self.page.elements if tag == "img" and "police-beian" not in attrs.get("src", "")]
+        images = [attrs for tag, attrs in self.page.elements
+                  if tag == "img" and "brand-mark" not in attrs.get("class", "").split()
+                  and "police-beian" not in attrs.get("src", "")]
         self.assertEqual(len(images), 2, "Market 和 Eorzea 使用截图，DB 保持占位")
         for image in images:
             with self.subTest(image=image["src"]):
