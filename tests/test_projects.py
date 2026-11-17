@@ -62,6 +62,20 @@ class ExtensionTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "duplicate project id"):
             projects.catalog(self.request)
 
+    def test_action_url_follows_deployment_target(self):
+        global_cards = projects.catalog(self.request, "global")["cards"]
+        domestic_cards = projects.catalog(self.request, "cn")["cards"]
+        market = next(card for card in global_cards if card["id"] == "market")
+        domestic = next(card for card in domestic_cards if card["id"] == "market")
+        self.assertEqual(market["action_url"], "https://icexiv.github.io/icexiv-market/")
+        self.assertEqual(domestic["action_url"], "https://market.icexiv.top/")
+        self.assertEqual(domestic["action_label"], "打开 Market")
+
+    def test_rejects_unknown_action_target(self):
+        cards = projects.catalog(self.request, "staging")["cards"]
+        market = next(card for card in cards if card["id"] == "market")
+        self.assertEqual(market["action_url"], "https://icexiv.github.io/icexiv-market/")
+
     def test_protocol_handles_both_events_in_one_process(self):
         before = {"version": 2, "event": "before_compile", "documents": {}}
         completed = subprocess.run(

@@ -45,7 +45,7 @@ main { flex: 1; min-width: 0; }
   letter-spacing: -.045em;
 }
 
-.brand svg { width: 27px; height: 29px; }
+.brand img { width: 29px; height: 29px; }
 .github {
   color: #737b87;
   display: inline-flex;
@@ -204,8 +204,8 @@ a:focus-visible, button:focus-visible { outline: 2px solid #3077c9; outline-offs
 .download-retry { flex: none; padding: 0; border: 0; background: none; color: #3077c9; font-size: .7rem; cursor: pointer; }
 .legal-footer { display: flex; flex-direction: column; align-items: center; gap: 10px; padding-bottom: 24px; font-size: .7rem; }
 .legal-footer a { color: #818995; text-decoration: none; }
-.legal-police { display: inline-flex; flex-direction: column; align-items: center; gap: 3px; }
-.legal-police img { display: block; width: 22px; height: 24px; object-fit: contain; }
+.legal-police { display: inline-flex; align-items: center; gap: 5px; }
+.legal-police img { display: block; width: 18px; height: 20px; object-fit: contain; }
 .download-option-title { font-size: .8rem; line-height: 1.6; }
 .download-option-note { max-width: 100%; overflow-wrap: anywhere; font-size: .65rem; line-height: 1.6; color: #8a929e; }
 .visual-stage { position: relative; isolation: isolate; padding: 32px 40px 48px; }
