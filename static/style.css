@@ -202,10 +202,10 @@ a:focus-visible, button:focus-visible { outline: 2px solid #3077c9; outline-offs
 .detail-text .download-status, .detail-text .download-menu-label { color: #8a929e; font-size: .68rem; line-height: 1.7; }
 .detail-text .download-menu-label { padding: 6px 10px; }
 .download-retry { flex: none; padding: 0; border: 0; background: none; color: #3077c9; font-size: .7rem; cursor: pointer; }
-.legal-footer { display: flex; justify-content: center; flex-wrap: wrap; gap: 12px; padding-bottom: 24px; font-size: .7rem; }
+.legal-footer { display: flex; flex-direction: column; align-items: center; gap: 10px; padding-bottom: 24px; font-size: .7rem; }
 .legal-footer a { color: #818995; text-decoration: none; }
-.legal-police { display: inline-flex; align-items: center; gap: 5px; }
-.legal-police img { display: block; width: 20px; height: 22px; object-fit: contain; }
+.legal-police { display: inline-flex; flex-direction: column; align-items: center; gap: 3px; }
+.legal-police img { display: block; width: 22px; height: 24px; object-fit: contain; }
 .download-option-title { font-size: .8rem; line-height: 1.6; }
 .download-option-note { max-width: 100%; overflow-wrap: anywhere; font-size: .65rem; line-height: 1.6; color: #8a929e; }
 .visual-stage { position: relative; isolation: isolate; padding: 32px 40px 48px; }
