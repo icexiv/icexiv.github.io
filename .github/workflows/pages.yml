@@ -44,7 +44,8 @@ jobs:
         run: |
           nix develop --no-update-lock-file --command node --check static/projects.js
           nix develop --no-update-lock-file --command node --check static/downloads.js
-          nix develop --no-update-lock-file --command node --test tests/downloads.test.cjs
+          nix develop --no-update-lock-file --command node --check static/_analytics/tracker.js
+          nix develop --no-update-lock-file --command node --test tests/downloads.test.cjs tests/analytics.test.cjs
 
       - name: Test domestic website
         env:

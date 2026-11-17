@@ -116,3 +116,9 @@ GitHub Pages 使用国际产物，`icexiv.top` 使用国内产物；二者都不
 - 手动运行：任意分支可构建，仅 `main` 可部署。
 
 Pages Source 使用 **GitHub Actions**。服务器部署使用专用受限密钥与 `rrsync`，同步时排除 `/downloads/`，不会删除 Eorzea 独立发布的清单。服务器配置与授权说明见 `ops/README.md`。
+
+## 国内站访问统计
+
+`icexiv.top` 复用 Market 自托管的 Medama：静态站提供 `/_analytics/tracker.js`，Caddy 只开放脚本、`ping` 和同源 `hit` 转发，后台不经过公网。国际站、开发时和 GitHub Pages 均不注入统计脚本。
+
+`static/_analytics/tracker.js` 只统计 `/` 与三个项目页，未知路径归入 `/other`；不上传查询串、hash、搜索词或外部 referrer 路径，无 Cookie 与持久 ID，尊重 DNT／GPC。首页切换项目不改变 URL，因此只按页面路径计数。`ops/icexiv.caddy` 中的 `/_analytics/*` 与 Caddy 服务器端配置保持一致；新增站点需在 Medama 中注册对应 hostname。
