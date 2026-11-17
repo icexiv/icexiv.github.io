@@ -94,8 +94,11 @@
         const link = split.querySelector('.download-primary');
         const unavailable = !channel ? '此渠道尚未发布' : !platform ? '展开箭头选择平台' : `${labels[platform] || platform} 暂无构建`;
         updateLink(link, asset, unavailable);
-        split.querySelector('[data-download-version]').textContent = channel ? channel.version : '未发布';
+        const version = channel?.version;
+        const devBuild = split.dataset.downloadChannel === 'dev' && version?.match(/^dev-([0-9a-f]{7,40})-\d+-\d+$/i);
+        split.querySelector('[data-download-version]').textContent = devBuild ? devBuild[1].slice(0, 7) : version || '未发布';
         split.querySelector('.download-filename').textContent = asset ? asset.filename : unavailable;
+        split.querySelector('.download-filename').title = asset ? asset.filename : unavailable;
         split.querySelector('.download-menu-label').textContent = platform ? '其他平台' : '选择平台';
         for (const option of split.querySelectorAll('[data-platform]')) {
           const key = option.dataset.platform;
