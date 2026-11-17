@@ -49,7 +49,7 @@ Notist 将正文编译成 HTML，extension 不拼接正文或界面 HTML，模�
 导航支持方向键、Home、End；滑块也支持 PageUp、PageDown，触屏支持拖动，减少动态模式下立即吸附。
 下方 `section.project-panel` 展示选中项目的详细说明与大图。标题行占满内容宽度，打开／下载按钮靠最右；说明段落与功能列表在标题下方按正文方式纵向排列。
 
-Eorzea 正式版和 Dev 各使用一个分体按钮：主按钮下载当前识别的平台，大字显示渠道和版本，小字显示完整文件名；右侧箭头提供其他平台的直接下载链接。浏览器优先用 Client Hints 识别系统、架构和位数，再使用 UA 明确提供的架构；不能确认（如没有 Client Hints 的 Safari Mac）时保持主按钮禁用，让用户从箭头中手选，不猜测 Apple Silicon。识别到尚未提供构建的架构时也不会静默换成 x64。
+Eorzea 正式版和 Dev 各使用一个紧凑分体按钮：主按钮下载当前识别的平台，大字显示渠道和版本（Dev 使用短提交号），下方单行小字显示文件名，超长时省略、悬停可查看完整名称；右侧箭头提供其他平台的直接下载链接。浏览器优先用 Client Hints 识别系统、架构和位数，再使用 UA 明确提供的架构；不能确认（如没有 Client Hints 的 Safari Mac）时保持主按钮禁用，让用户从箭头中手选，不猜测 Apple Silicon。识别到尚未提供构建的架构时也不会静默换成 x64。
 浏览器读取静态清单，不请求 GitHub API，也不携带凭据。未发布渠道或缺少对应平台时，链接保持禁用；网络错误单独提示并可重试，不冒充“未发布”。两个下拉互斥，当前平台不重复出现在“其他平台”中。
 国际站读取 Eorzea 仓库 `main/downloads/github.json`，仅使用 GitHub Release 地址；国内站读取本站 `/downloads/eorzea.json`，仅使用 TOS 地址。清单由 Eorzea 发布 CI 更新，网站无需因下载版本变化而重新构建。来源及备案配置位于 `data/deployment.toml`。
 下拉基于原生 `details`，支持键盘展开、Escape 收起、点击外部收起和切换项目时关闭。
@@ -105,7 +105,7 @@ node --check static/projects.js
 ## 发布
 
 将 `dist/`（或 `nix build` 的 `result/`）内的内容部署到静态站点根目录，不要部署源码目录。
-GitHub Pages 使用国际产物，`icexiv.top` 使用国内产物；二者都不直接发布源码目录。国内站悬挂与 Market 一致的 ICP 备案，公安备案为空时不显示。
+GitHub Pages 使用国际产物，`icexiv.top` 使用国内产物；二者都不直接发布源码目录。国内站悬挂与 Market 一致的 ICP 和公安备案，公安备案带备案图标链接；国际站不显示。
 
 ### GitHub Pages CI
 

@@ -112,13 +112,16 @@ class SiteTests(unittest.TestCase):
                 self.assertTrue(any("project-card" in a.get("class", "").split() for _, a in parents))
             if "repo-link" in classes:
                 self.assertTrue(any("project-header" in a.get("class", "").split() for _, a in parents))
-            if tag == "img":
+            if tag == "img" and "police-beian" not in attrs.get("src", ""):
                 self.assertFalse(any(t in {"a", "button"} for t, _ in parents), "截图仅展示，不提供点击放大")
                 self.assertTrue(any("screen" in a.get("class", "").split() for _, a in parents))
                 self.assertIn("notist-embed", parents[-1][1].get("class", "").split())
+                self.assertTrue(attrs.get("alt"))
+            elif tag == "img":
+                self.assertTrue(any("legal-police" in a.get("class", "").split() for _, a in parents))
 
     def test_screenshot_dimensions(self):
-        images = [attrs for tag, attrs in self.page.elements if tag == "img"]
+        images = [attrs for tag, attrs in self.page.elements if tag == "img" and "police-beian" not in attrs.get("src", "")]
         self.assertEqual(len(images), 2, "Market 和 Eorzea 使用截图，DB 保持占位")
         for image in images:
             with self.subTest(image=image["src"]):
@@ -156,6 +159,12 @@ class SiteTests(unittest.TestCase):
         self.assertEqual(group["data-download-manifest"], "/downloads/eorzea.json" if domestic
                          else "https://raw.githubusercontent.com/icexiv/eorzea/main/downloads/github.json")
         self.assertEqual(bool(self.page.with_class("legal-footer")), domestic)
+        police = self.page.with_class("legal-police")
+        self.assertEqual(len(police), 1 if domestic else 0)
+        if domestic:
+            self.assertEqual(police[0][1]["href"], "https://beian.mps.gov.cn/#/query/webSearch?code=11010502064164")
+            self.assertIn("京公网安备11010502064164号", PAGE.read_text())
+            self.assertTrue((ROOT / "assets/police-beian.png").is_file())
 
     def test_standalone_project_pages(self):
         for key in ("market", "db", "eorzea"):
