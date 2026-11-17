@@ -30,7 +30,7 @@
       {% if site.data.deployment.target == "cn" %}
       <div class="legal-footer page-width">
         {% if site.data.deployment.icp %}<a href="{{ site.data.deployment.icp_url }}" target="_blank" rel="noopener noreferrer">{{ site.data.deployment.icp }}</a>{% endif %}
-        {% if site.data.deployment.police %}<a class="legal-police" href="{{ site.data.deployment.police_url }}" target="_blank" rel="noreferrer"><img src="{{ url(path=site.data.deployment.police_icon) }}" width="22" height="24" alt="">{{ site.data.deployment.police }}</a>{% endif %}
+        {% if site.data.deployment.police %}<a class="legal-police" href="{{ site.data.deployment.police_url }}" target="_blank" rel="noreferrer"><img src="{{ url(path=site.data.deployment.police_icon) }}" width="18" height="20" alt="">{{ site.data.deployment.police }}</a>{% endif %}
       </div>
       {% endif %}
     </div>

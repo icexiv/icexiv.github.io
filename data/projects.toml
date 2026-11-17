@@ -7,6 +7,7 @@ repo = "https://github.com/icexiv/icexiv-market"
 repo_name = "icexiv-market"
 action = "open"
 action_url = "https://icexiv.github.io/icexiv-market/"
+action_urls = { cn = "https://market.icexiv.top/" }
 action_label = "打开 Market"
 sources = [
   { name = "Universalis API", url = "https://docs.universalis.app/" },

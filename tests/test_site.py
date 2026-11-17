@@ -165,6 +165,9 @@ class SiteTests(unittest.TestCase):
         self.assertEqual(group["data-download-manifest"], "/downloads/eorzea.json" if domestic
                          else "https://raw.githubusercontent.com/icexiv/eorzea/main/downloads/github.json")
         self.assertEqual(bool(self.page.with_class("legal-footer")), domestic)
+        market = [attrs["href"] for _, attrs in self.page.with_class("product-link") if "href" in attrs]
+        expected = "https://market.icexiv.top/" if domestic else "https://icexiv.github.io/icexiv-market/"
+        self.assertIn(expected, market)
         police = self.page.with_class("legal-police")
         self.assertEqual(len(police), 1 if domestic else 0)
         if domestic:

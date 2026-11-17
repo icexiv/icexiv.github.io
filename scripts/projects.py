@@ -20,7 +20,8 @@ def embedded_html(body, page_url):
     return re.sub(r'\b(href|src)="([^"]*)"', replace, body)
 
 
-def catalog(request):
+def catalog(request, target="global"):
+    """Join project metadata with compiled bodies; resolve per-target action URLs."""
     pages = {page["route"]["path"]: page for page in request["pages"]}
     entries = request["data"]["projects"]["projects"]
     if not entries:
@@ -42,6 +43,12 @@ def catalog(request):
             raise ValueError(f"unknown project icon: {entry['icon']}")
         common = dict(entry, title=page["title"], url=page["route"]["url"],
                       active=index == 0, panel_id=f"project-{key}", heading_id=f"{key}-heading")
+        action_urls = entry.get("action_urls")
+        if action_urls:
+            resolved = action_urls.get(target, entry.get("action_url"))
+            if not resolved:
+                raise ValueError(f"missing {target} action URL for project: {key}")
+            common["action_url"] = resolved
         cards.append(common)
         navigation.append({name: common[name] for name in ("id", "title", "active", "panel_id")})
         panels.append(dict(common, html=embedded_html(page["html"], page["route"]["url"])))
@@ -58,10 +65,10 @@ def respond(request):
     if request["event"] != "before_template":
         raise ValueError("unsupported event")
     data = dict(request["data"])
-    data["catalog"] = catalog(request)
     target = os.environ.get("SITE_TARGET", "global")
     if target not in {"global", "cn"}:
         raise ValueError("SITE_TARGET must be global or cn")
+    data["catalog"] = catalog(request, target)
     deployment = data["deployment"]
     data["deployment"] = dict(deployment, target=target,
         manifest=deployment["server_manifest" if target == "cn" else "github_manifest"],
