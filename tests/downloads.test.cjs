@@ -67,6 +67,15 @@ test('stable and Dev versions and filenames are independent', async () => {
   assert.equal(c.stable.filename.textContent, 'stable.zip');
   assert.equal(c.dev.filename.textContent, 'app.zip');
 });
+test('Dev build title uses a short commit while retaining full download metadata', async () => {
+  const data = manifest();
+  data.channels.dev.version = 'dev-466cf4a-9-1';
+  data.channels.dev.assets['windows-x86_64'] = asset('github', 'eorzea-app-dev-466cf4a-9-1-windows-x86_64.zip');
+  const { channels: c } = await run(data);
+  assert.equal(c.dev.version.textContent, '466cf4a');
+  assert.equal(c.dev.filename.textContent, 'eorzea-app-dev-466cf4a-9-1-windows-x86_64.zip');
+  assert.match(c.dev.main.title, /eorzea-app-dev-466cf4a-9-1-windows-x86_64.zip/);
+});
 test('client hints detect Apple Silicon despite Intel UA', async () => {
   const { channels: c } = await run(manifest(), { navigator: {
     platform: 'MacIntel', userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X)',
