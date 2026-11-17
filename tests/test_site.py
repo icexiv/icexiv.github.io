@@ -158,6 +158,17 @@ class SiteTests(unittest.TestCase):
             self.assertEqual(attrs["aria-disabled"], "true")
         self.assertEqual(len(self.page.with_class("download-filename")), 2)
 
+    def test_same_tab_links_use_horizontal_arrow(self):
+        html = PAGE.read_text()
+        self.assertIn('class="arrow" aria-hidden="true">→</span>', html)
+        self.assertNotIn('↗', html)
+        for tag, attrs in self.page.elements:
+            if tag != "a":
+                continue
+            classes = attrs.get("class", "").split()
+            if "product-link" in classes or "project-permalink" in classes:
+                self.assertNotIn("target", attrs, "same-tab links must not force a new tab")
+
     def test_deployment_source_and_legal_footer(self):
         domestic = os.environ.get("SITE_TARGET") == "cn"
         group = self.page.with_class("download-controls")[0][1]
