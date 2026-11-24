@@ -1,6 +1,6 @@
 @!(title: "Eorzea", template: "project")
 
-#import "../components/media.notc" as media;
+#import "../components/media.not" as media;
 
 Windows 原生启动，Linux / macOS 通过 Wine 运行。集成 Dalamud，多帐号支持。
 

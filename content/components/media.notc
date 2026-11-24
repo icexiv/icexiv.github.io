@@ -1,7 +1,0 @@
-fn screenshot[children: BlockContent] -> BlockContent {
-    [
-        @(class: "visual-stage")#node[
-            @(class: "screen")#node[ #children ]
-        ]
-    ]
-}

@@ -1,6 +1,6 @@
 @!(title: "Market", template: "project")
 
-#import "../components/media.notc" as media;
+#import "../components/media.not" as media;
 
 查看物品挂单、价格分布与成交走势，按区域或服务器浏览市场行情。
 
