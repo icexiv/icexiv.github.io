@@ -40,7 +40,7 @@ Notist 将正文编译成 HTML，extension 不拼接正文或界面 HTML，模�
 - DB：打开物品资料库；国内站链接 `https://db.icexiv.top/`，国际站链接 GitHub Pages。
 - Eorzea：FFXIV 国服启动器，标记「实验」，App 按正式版／Dev 和平台提供下载；CLI 提供 Git 源码安装说明。
 
-Market 卡片使用透明背景的交易板项目标识，资源为 `static/logos/market.png`，与 Market 仓库的 `app/public/logo.png` 保持一致；图标尺寸随卡片适配，不另加彩色底板。站点顶部与 favicon 继续使用 IceXIV 冰方块主标识。
+Market 卡片使用透明背景的交易板项目标识，资源为 `static/logos/market.png`，与 Market 仓库的 `app/public/logo.png` 保持一致。DB 卡片使用《艾欧泽亚百科全书》项目标识，资源为 `static/logos/db.png`，与 DB 仓库的 `static/logo.png` 保持一致。图标尺寸随卡片适配，不另加彩色底板。站点顶部与 favicon 继续使用 IceXIV 冰方块主标识。
 
 卡片文案在 `data/projects.toml` 中维护，正文在 `content/projects/*.md` 中维护，布局和颜色在 `static/style.css` 中维护，交互在 `static/projects.js` 中维护。
 上方使用可横向浏览的 `li.project-card`，每张包含项目名称、简介和数据来源，GitHub 图标与仓库名位于卡片右上角。
