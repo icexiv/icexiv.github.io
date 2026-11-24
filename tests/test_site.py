@@ -118,7 +118,7 @@ class SiteTests(unittest.TestCase):
                 self.assertFalse(attrs.get("alt"), "标志与文字并列，图像本身是装饰")
             elif tag == "img" and "project-logo" in classes:
                 self.assertFalse(attrs.get("alt"), "项目标识与项目名称并列，图像本身是装饰")
-                self.assertTrue(any("market-icon" in a.get("class", "").split() for _, a in parents))
+                self.assertTrue(any("icon" in a.get("class", "").split() for _, a in parents))
             elif tag == "img" and "police-beian" not in attrs.get("src", ""):
                 self.assertFalse(any(t in {"a", "button"} for t, _ in parents), "截图仅展示，不提供点击放大")
                 self.assertTrue(any("screen" in a.get("class", "").split() for _, a in parents))

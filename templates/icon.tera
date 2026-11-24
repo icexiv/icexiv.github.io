@@ -2,10 +2,7 @@
 {% if project.icon == "market" %}
   <img class="project-logo" src="{{ url(path='logos/market.png') }}" width="40" height="40" alt="">
 {% elif project.icon == "db" %}
-  <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-    <path d="m16 5 11 6-11 6-11-6Z" fill="currentColor" fill-opacity=".09"/>
-    <path d="m5 16 11 6 11-6" opacity=".75"/><path d="m5 21 11 6 11-6" opacity=".45"/>
-  </svg>
+  <img class="project-logo" src="{{ url(path='logos/db.png') }}" width="40" height="40" alt="">
 {% else %}
   <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
     <circle cx="16" cy="16" r="10" opacity=".55"/><ellipse cx="16" cy="16" rx="4.5" ry="10"/>
