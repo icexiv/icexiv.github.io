@@ -1,0 +1,3 @@
+fn screenshot(children: Block) -> Block {
+    div(div(children).with_attr("class", "screen")).with_attr("class", "visual-stage")
+}

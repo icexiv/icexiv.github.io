@@ -1,11 +1,6 @@
 <span class="icon {{ project.icon }}-icon">
 {% if project.icon == "market" %}
-  <svg viewBox="0 0 32 32" fill="none" aria-hidden="true">
-    <rect x="5" y="18" width="4" height="8" rx="1.5" fill="currentColor" opacity=".4"/>
-    <rect x="14" y="13" width="4" height="13" rx="1.5" fill="currentColor" opacity=".65"/>
-    <rect x="23" y="6" width="4" height="20" rx="1.5" fill="currentColor"/>
-    <path d="m6.5 12 8-5.5 4.5 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-  </svg>
+  <img class="project-logo" src="{{ url(path='logos/market.png') }}" width="40" height="40" alt="">
 {% elif project.icon == "db" %}
   <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
     <path d="m16 5 11 6-11 6-11-6Z" fill="currentColor" fill-opacity=".09"/>
