@@ -278,7 +278,7 @@ a:focus-visible, button:focus-visible { outline: 2px solid #3077c9; outline-offs
   border-radius: 10px;
 }
 .icon svg { width: 24px; height: 24px; }
-.market-icon { background: #eaf4ef; color: #2b7957; }
+.icon .project-logo { width: 100%; height: 100%; object-fit: contain; }
 .db-icon { background: #f4f5f6; color: #a1a8b2; }
 .eorzea-icon { background: #f4f0e8; color: #a4834a; }
 .unavailable { background: #fcfcfd; }

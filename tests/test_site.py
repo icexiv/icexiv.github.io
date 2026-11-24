@@ -116,6 +116,9 @@ class SiteTests(unittest.TestCase):
             if tag == "img" and "brand-mark" in classes:
                 self.assertTrue(any("brand" in a.get("class", "").split() for _, a in parents))
                 self.assertFalse(attrs.get("alt"), "标志与文字并列，图像本身是装饰")
+            elif tag == "img" and "project-logo" in classes:
+                self.assertFalse(attrs.get("alt"), "项目标识与项目名称并列，图像本身是装饰")
+                self.assertTrue(any("market-icon" in a.get("class", "").split() for _, a in parents))
             elif tag == "img" and "police-beian" not in attrs.get("src", ""):
                 self.assertFalse(any(t in {"a", "button"} for t, _ in parents), "截图仅展示，不提供点击放大")
                 self.assertTrue(any("screen" in a.get("class", "").split() for _, a in parents))
@@ -127,6 +130,7 @@ class SiteTests(unittest.TestCase):
     def test_screenshot_dimensions(self):
         images = [attrs for tag, attrs in self.page.elements
                   if tag == "img" and "brand-mark" not in attrs.get("class", "").split()
+                  and "project-logo" not in attrs.get("class", "").split()
                   and "police-beian" not in attrs.get("src", "")]
         self.assertEqual(len(images), 2, "Market 和 Eorzea 使用截图，DB 保持占位")
         for image in images:
