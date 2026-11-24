@@ -19,10 +19,12 @@ id = "db"
 page = "projects/db.md"
 icon = "db"
 description = "查阅物品与游戏资料。"
-badge = "WIP"
-badge_class = "wip"
-unavailable = true
-note = "开发中"
+repo = "https://github.com/icexiv/icexiv-db"
+repo_name = "icexiv-db"
+action = "open"
+action_url = "https://icexiv.github.io/icexiv-db/"
+action_urls = { cn = "https://db.icexiv.top/" }
+action_label = "打开 DB"
 empty_preview = true
 
 [[projects]]
