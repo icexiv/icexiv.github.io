@@ -37,7 +37,7 @@ Notist 将正文编译成 HTML，extension 不拼接正文或界面 HTML，模�
 ## 产品入口
 
 - Market：详情页的「打开 Market」按部署目标指向 GitHub Pages 或 `market.icexiv.top`。
-- DB：灰色展示，标记 WIP，无链接。
+- DB：打开物品资料库；国内站链接 `https://db.icexiv.top/`，国际站链接 GitHub Pages。
 - Eorzea：FFXIV 国服启动器，标记「实验」，App 按正式版／Dev 和平台提供下载；CLI 提供 Git 源码安装说明。
 
 卡片文案在 `data/projects.toml` 中维护，正文在 `content/projects/*.md` 中维护，布局和颜色在 `static/style.css` 中维护，交互在 `static/projects.js` 中维护。

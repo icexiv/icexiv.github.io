@@ -74,7 +74,7 @@ class SiteTests(unittest.TestCase):
     def test_independent_links(self):
         self.assertFalse(self.page.nested_links)
         self.assertEqual(self.page.anchor_depth, 0)
-        self.assertEqual(len(self.page.with_class("product-link")), 3)
+        self.assertEqual(len(self.page.with_class("product-link")), 4)
 
     def test_cards_and_placeholders(self):
         self.assertEqual(len(self.page.with_class("project-card")), 3)
@@ -119,7 +119,7 @@ class SiteTests(unittest.TestCase):
             elif tag == "img" and "police-beian" not in attrs.get("src", ""):
                 self.assertFalse(any(t in {"a", "button"} for t, _ in parents), "截图仅展示，不提供点击放大")
                 self.assertTrue(any("screen" in a.get("class", "").split() for _, a in parents))
-                self.assertIn("notist-embed", parents[-1][1].get("class", "").split())
+                self.assertTrue(any("visual-stage" in a.get("class", "").split() for _, a in parents))
                 self.assertTrue(attrs.get("alt"))
             elif tag == "img":
                 self.assertTrue(any("legal-police" in a.get("class", "").split() for _, a in parents))
@@ -168,6 +168,7 @@ class SiteTests(unittest.TestCase):
         market = [attrs["href"] for _, attrs in self.page.with_class("product-link") if "href" in attrs]
         expected = "https://market.icexiv.top/" if domestic else "https://icexiv.github.io/icexiv-market/"
         self.assertIn(expected, market)
+        self.assertIn("https://db.icexiv.top/" if domestic else "https://icexiv.github.io/icexiv-db/", market)
         police = self.page.with_class("legal-police")
         self.assertEqual(len(police), 1 if domestic else 0)
         if domestic:
