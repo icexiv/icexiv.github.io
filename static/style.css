@@ -279,7 +279,6 @@ a:focus-visible, button:focus-visible { outline: 2px solid #3077c9; outline-offs
 }
 .icon svg { width: 24px; height: 24px; }
 .icon .project-logo { width: 100%; height: 100%; object-fit: contain; }
-.eorzea-icon { background: #f4f0e8; color: #a4834a; }
 .unavailable { background: #fcfcfd; }
 .unavailable .project-header, .unavailable .project-description { color: #8a929e; }
 .badge {
