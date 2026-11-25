@@ -1,13 +1,4 @@
 <span class="icon {{ project.icon }}-icon">
-{% if project.icon == "market" %}
-  <img class="project-logo" src="{{ url(path='logos/market.png') }}" width="40" height="40" alt="">
-{% elif project.icon == "db" %}
-  <img class="project-logo" src="{{ url(path='logos/db.png') }}" width="40" height="40" alt="">
-{% else %}
-  <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-    <circle cx="16" cy="16" r="10" opacity=".55"/><ellipse cx="16" cy="16" rx="4.5" ry="10"/>
-    <path d="M6 16h20M8 10.5c5 2 11 2 16 0M8 21.5c5-2 11-2 16 0" opacity=".7"/>
-    <path d="m24.5 3 .7 2.3 2.3.7-2.3.7-.7 2.3-.7-2.3-2.3-.7 2.3-.7Z" fill="currentColor" stroke="none"/>
-  </svg>
-{% endif %}
+  {% set logo_path = 'logos/' ~ project.icon ~ '.png' %}
+  <img class="project-logo" src="{{ url(path=logo_path) }}" width="40" height="40" alt="">
 </span>
