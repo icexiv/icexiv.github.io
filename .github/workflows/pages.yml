@@ -25,6 +25,9 @@ jobs:
       - name: Install Nix
         uses: cachix/install-nix-action@v31
 
+      - name: Magic Nix Cache
+        uses: DeterminateSystems/magic-nix-cache-action@main
+
       - name: Check flake
         run: nix flake check --no-build --no-update-lock-file
 
