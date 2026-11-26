@@ -79,8 +79,9 @@ class SiteTests(unittest.TestCase):
     def test_cards_and_placeholders(self):
         self.assertEqual(len(self.page.with_class("project-card")), 3)
         placeholders = self.page.with_class("preview-placeholder")
-        self.assertEqual(len(placeholders), 1)
-        self.assertTrue(all(attrs.get("aria-label") for _, attrs in placeholders))
+        self.assertFalse(placeholders)
+        self.assertEqual(len(self.page.with_class("db-models")), 1)
+        self.assertEqual(len(self.page.with_class("db-spread")), 1)
 
     def test_project_selection_structure(self):
         selectors = [a for _, a in self.page.elements if "data-select" in a]
@@ -121,8 +122,8 @@ class SiteTests(unittest.TestCase):
                 self.assertTrue(any("icon" in a.get("class", "").split() for _, a in parents))
             elif tag == "img" and "police-beian" not in attrs.get("src", ""):
                 self.assertFalse(any(t in {"a", "button"} for t, _ in parents), "截图仅展示，不提供点击放大")
-                self.assertTrue(any("screen" in a.get("class", "").split() for _, a in parents))
-                self.assertTrue(any("visual-stage" in a.get("class", "").split() for _, a in parents))
+                classes = {c for _, a in parents for c in a.get("class", "").split()}
+                self.assertTrue({"screen", "visual-stage"} <= classes or classes.intersection({"db-models", "db-spread"}))
                 self.assertTrue(attrs.get("alt"))
             elif tag == "img":
                 self.assertTrue(any("legal-police" in a.get("class", "").split() for _, a in parents))
@@ -132,11 +133,15 @@ class SiteTests(unittest.TestCase):
                   if tag == "img" and "brand-mark" not in attrs.get("class", "").split()
                   and "project-logo" not in attrs.get("class", "").split()
                   and "police-beian" not in attrs.get("src", "")]
-        self.assertEqual(len(images), 2, "Market 和 Eorzea 使用截图，DB 保持占位")
+        self.assertEqual(len(images), 9)
         for image in images:
             with self.subTest(image=image["src"]):
                 self.assertTrue(image.get("alt"))
                 data = (ROOT / image["src"].lstrip("/")).read_bytes()
+                if image["src"].endswith(".webp"):
+                    self.assertEqual(data[0:4], b"RIFF")
+                    self.assertEqual(data[8:12], b"WEBP")
+                    continue
                 self.assertEqual(data[:8], b"\x89PNG\r\n\x1a\n")
                 width, height = struct.unpack(">II", data[16:24])
                 self.assertGreaterEqual(width, 2080, "大图源文件需覆盖 1040px 展示宽度的 2 倍像素密度")
