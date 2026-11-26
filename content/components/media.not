@@ -1,3 +1,11 @@
 fn screenshot(children: Block) -> Block {
     div(div(children).with_attr("class", "screen")).with_attr("class", "visual-stage")
 }
+
+fn spread(children: Block) -> Block {
+    div(children).with_attr("class", "db-spread")
+}
+
+fn models(children: Block) -> Block {
+    div(children).with_attr("class", "db-models")
+}

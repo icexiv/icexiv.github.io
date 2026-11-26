@@ -18,14 +18,13 @@ sources = [
 id = "db"
 page = "projects/db.md"
 icon = "db"
-description = "查阅物品与游戏资料。"
+description = "查询国服物品，试听管弦乐琴乐谱，查看肖像教材和三维模型。"
 repo = "https://github.com/icexiv/icexiv-db"
 repo_name = "icexiv-db"
 action = "open"
 action_url = "https://icexiv.github.io/icexiv-db/"
 action_urls = { cn = "https://db.icexiv.top/" }
 action_label = "打开 DB"
-empty_preview = true
 
 [[projects]]
 id = "eorzea"
