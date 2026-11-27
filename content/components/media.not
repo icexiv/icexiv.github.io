@@ -9,3 +9,7 @@ fn spread(children: Block) -> Block {
 fn models(children: Block) -> Block {
     div(children).with_attr("class", "db-models")
 }
+
+fn fan(children: Block) -> Block {
+    div(children).with_attr("class", "db-fan")
+}
