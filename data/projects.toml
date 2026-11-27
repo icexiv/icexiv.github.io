@@ -18,13 +18,17 @@ sources = [
 id = "db"
 page = "projects/db.md"
 icon = "db"
-description = "查询国服物品，试听管弦乐琴乐谱，查看肖像教材和三维模型。"
+description = "查询国服物品，试听管弦乐琴乐谱，支持三维模型试穿、发型面妆预览与多轨时间轴动作特效回放。"
 repo = "https://github.com/icexiv/icexiv-db"
 repo_name = "icexiv-db"
 action = "open"
 action_url = "https://icexiv.github.io/icexiv-db/"
 action_urls = { cn = "https://db.icexiv.top/" }
 action_label = "打开 DB"
+sources = [
+  { name = "icexiv-data", url = "https://github.com/icexiv/icexiv-data" },
+  { name = "ffxiv-datamining-cn", url = "https://github.com/thewakingsands/ffxiv-datamining-cn" },
+]
 
 [[projects]]
 id = "eorzea"
